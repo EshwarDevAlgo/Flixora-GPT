@@ -77,11 +77,16 @@ const watchlistSlice = createSlice({
         });
       })
       .addCase(addToWatchlist.fulfilled, (state, action) => {
-        // Replace the optimistic placeholder with confirmed DB row
+        // Replace the optimistic placeholder with confirmed DB row,
+        // or add the item if no optimistic placeholder exists.
         const idx = state.items.findIndex(
           (i) => i.tmdb_id === action.payload.tmdb_id && i._optimistic
         );
-        if (idx !== -1) state.items[idx] = action.payload;
+        if (idx !== -1) {
+          state.items[idx] = action.payload;
+        } else {
+          state.items.unshift(action.payload);
+        }
       })
       .addCase(addToWatchlist.rejected, (state, action) => {
         // Revert — remove the optimistic item
@@ -100,7 +105,10 @@ const watchlistSlice = createSlice({
         // Immediately remove from UI
         state.items = state.items.filter((i) => i.tmdb_id !== tmdbId);
       })
-      .addCase(removeFromWatchlist.fulfilled, (state) => {
+      .addCase(removeFromWatchlist.fulfilled, (state, action) => {
+        if (!state._removedItem) {
+          state.items = state.items.filter((i) => i.tmdb_id !== action.payload);
+        }
         state._removedItem = null;
       })
       .addCase(removeFromWatchlist.rejected, (state) => {

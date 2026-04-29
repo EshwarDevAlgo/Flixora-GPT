@@ -5,6 +5,7 @@ describe("watchlistSlice", () => {
     items: [],
     loading: false,
     error: null,
+    _removedItem: null,
   };
 
   it("should return the initial state", () => {
