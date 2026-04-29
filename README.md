@@ -1,70 +1,172 @@
-# Getting Started with Create React App
+# FlixoraGPT — AI-Powered Streaming Discovery Platform
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A full-stack movie and TV discovery platform powered by AI (OpenAI), real movie data (TMDB), Firebase authentication, Supabase for persistent storage, and a modern React/Redux frontend.
 
-## Available Scripts
+## Tech Stack
 
-In the project directory, you can run:
+| Layer | Technology |
+|-------|-----------|
+| Frontend | React 19, Redux Toolkit, React Router v7, Tailwind CSS v4 |
+| Backend | Node.js, Express 5 |
+| Auth | Google Firebase (Email/Password + Google Sign-In) |
+| Database | Supabase (PostgreSQL) |
+| AI | OpenAI API (GPT-4o-mini) |
+| Movie Data | TMDB API |
+| Testing | Jest, React Testing Library, Supertest |
 
-### `npm start`
+## Features
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+- **AI-Powered Search** — Describe what you want to watch in natural language; GPT returns curated matching titles from TMDB
+- **Browse** — Now playing, popular, top-rated, upcoming, trending movies & TV shows
+- **Detail Pages** — Full movie/TV info, cast, trailers, similar titles
+- **Watchlist** — Persist your watchlist to Supabase (synced per user)
+- **Google & Email Auth** — Firebase authentication with protected routes
+- **Responsive UI** — Dark-themed, Netflix-inspired design with Tailwind CSS
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+---
 
-### `npm test`
+## Setup Instructions
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### 1. Clone & Install
 
-### `npm run build`
+```bash
+cd flixora-gpt
+npm install
+cd server && npm install && cd ..
+```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### 2. Get API Keys
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+You need **4 services** configured:
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+#### A. TMDB API Key
+1. Go to https://www.themoviedb.org/settings/api
+2. Create an account → Request an API key (free)
+3. Copy the **API Key (v3 auth)**
 
-### `npm run eject`
+#### B. OpenAI API Key
+1. Go to https://platform.openai.com/api-keys
+2. Create a new secret key
+3. Add billing/credits to your account (GPT-4o-mini is very cheap)
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+#### C. Firebase (Authentication)
+1. Go to https://console.firebase.google.com/
+2. Create a new project (e.g., "flixora-gpt")
+3. Go to **Authentication** → **Sign-in method** → Enable:
+   - **Email/Password**
+   - **Google** (set support email)
+4. Go to **Project Settings** → **General** → scroll to "Your apps" → click **Web App** (</> icon)
+5. Register app → copy the Firebase config values
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+#### D. Supabase (Database)
+1. Go to https://supabase.com/dashboard
+2. Create a new project (note the password, pick a region)
+3. Go to **SQL Editor** → paste & run the contents of `supabase/schema.sql`
+4. Go to **Settings** → **API** → copy:
+   - **Project URL** (e.g., `https://xyz.supabase.co`)
+   - **anon public** key
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+### 3. Configure Environment Variables
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+#### Frontend (`.env`):
+```env
+REACT_APP_FIREBASE_API_KEY=your_firebase_api_key
+REACT_APP_FIREBASE_AUTH_DOMAIN=your_project.firebaseapp.com
+REACT_APP_FIREBASE_PROJECT_ID=your_project_id
+REACT_APP_FIREBASE_STORAGE_BUCKET=your_project.appspot.com
+REACT_APP_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
+REACT_APP_FIREBASE_APP_ID=your_app_id
+REACT_APP_SUPABASE_URL=https://your-project.supabase.co
+REACT_APP_SUPABASE_ANON_KEY=your_supabase_anon_key
+REACT_APP_API_BASE_URL=http://localhost:5000/api
+```
 
-## Learn More
+#### Backend (`server/.env`):
+```env
+OPENAI_API_KEY=sk-your-openai-key
+TMDB_API_KEY=your_tmdb_api_key
+PORT=5000
+ALLOWED_ORIGIN=http://localhost:3000
+```
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### 4. Run the App
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+```bash
+# Terminal 1 — Backend
+cd server
+npm start
 
-### Code Splitting
+# Terminal 2 — Frontend  (from project root)
+npm start
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+The app opens at http://localhost:3000
 
-### Analyzing the Bundle Size
+### 5. Run Tests
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+```bash
+# Frontend tests (26 tests)
+npm test -- --watchAll=false
 
-### Making a Progressive Web App
+# Backend tests (6 tests)
+cd server && npx jest --forceExit
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+---
 
-### Advanced Configuration
+## Deployment
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+### Frontend (Vercel/Netlify)
+1. Build: `npm run build`
+2. Deploy the `build/` folder
+3. Set all `REACT_APP_*` environment variables in the platform dashboard
+4. Update `REACT_APP_API_BASE_URL` to your deployed backend URL
 
-### Deployment
+### Backend (Render/Railway/Fly.io)
+1. Deploy the `server/` directory
+2. Set `OPENAI_API_KEY`, `TMDB_API_KEY`, and `ALLOWED_ORIGIN` (your frontend URL)
+3. Start command: `node index.js`
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+### Firebase
+- Add your deployed frontend domain to Firebase Console → Authentication → Settings → Authorized domains
 
-### `npm run build` fails to minify
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+## Project Structure
+
+```
+flixora-gpt/
+├── public/
+├── server/                   # Node.js/Express backend
+│   ├── routes/
+│   │   ├── gpt.js            # OpenAI-powered search
+│   │   └── tmdb.js           # TMDB API proxy
+│   ├── __tests__/
+│   ├── index.js
+│   └── .env
+├── src/
+│   ├── components/
+│   │   ├── Header/
+│   │   ├── HeroBanner/
+│   │   ├── MovieCard/
+│   │   ├── MovieRow/
+│   │   ├── GptSearch/
+│   │   ├── Shimmer/
+│   │   └── Footer/
+│   ├── pages/
+│   │   ├── Login/
+│   │   ├── Browse/
+│   │   ├── Detail/
+│   │   ├── Watchlist/
+│   │   └── TVShows/
+│   ├── store/
+│   │   ├── slices/ (userSlice, moviesSlice, gptSlice, watchlistSlice)
+│   │   └── store.js
+│   ├── config/ (firebase.js, supabase.js, constants.js)
+│   ├── hooks/ (useAuthListener.js, useMovieData.js)
+│   ├── __tests__/
+│   ├── App.js
+│   └── index.js
+├── supabase/schema.sql
+└── .env
+```
